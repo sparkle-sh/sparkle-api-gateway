@@ -1,0 +1,13 @@
+name: sparkle api gateway pipeline
+
+on: [push]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: set scripts permissions
+              run: chmod 777 ./bin/*.sh
+            - name: build docker
+              run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+            
