@@ -4,6 +4,7 @@ import uvloop
 import asyncio
 import aiomisc
 from core.log import get_logger
+from core.db import ConnectionPool
 
 
 log = get_logger("main")
@@ -11,18 +12,16 @@ log = get_logger("main")
 
 @aiomisc.receiver(aiomisc.entrypoint.PRE_START)
 async def pre_init(entrypoint, services) -> None:
-    log = get_logger("main.init")
-
-    log.info("setting up signal handler")
+    log.info("Setting up signal handler")
 
     async def shutdown() -> None:
-        log.info("received SIGINT/SIGTERM shutting down all active task")
+        log.info("Received SIGINT/SIGTERM shutting down all active task")
         tasks = [t for t in asyncio.Task.all_tasks(
         ) if t is not asyncio.Task.current_task()]
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
-        log.info("stopping event loop")
+        log.info("Stopping event loop")
         asyncio.get_event_loop().stop()
 
     for sig in [signal.SIGTERM, signal.SIGINT]:
@@ -30,5 +29,16 @@ async def pre_init(entrypoint, services) -> None:
             sig, lambda: asyncio.create_task(shutdown())
         )
 
+    log.info("Connecting connection pool")
+    await ConnectionPool.init()
 
-print("Hello API!")
+
+async def main():
+    async with ConnectionPool.acquire_connection() as conn:
+        users = await conn.fetch("SELECT * from users")
+        for user in users:
+            print(user['name'], user['passwd'])
+
+
+with aiomisc.entrypoint(log_config=False) as loop:
+    loop.run_until_complete(main())
