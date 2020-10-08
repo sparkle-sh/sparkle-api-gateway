@@ -39,6 +39,10 @@ async def main():
         for user in users:
             print(user['name'], user['passwd'])
 
+try:
+    with aiomisc.entrypoint(log_config=False) as loop:
+        loop.run_until_complete(main())
+except asyncio.CancelledError:
+    pass
 
-with aiomisc.entrypoint(log_config=False) as loop:
-    loop.run_until_complete(main())
+log.info("Application finished")
