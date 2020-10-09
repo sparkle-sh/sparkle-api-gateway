@@ -1,4 +1,4 @@
-name:sparkle-api-gateway ci pipeline
+name: sparkle-api-gateway ci pipeline
 
 on: [push]
 jobs:
