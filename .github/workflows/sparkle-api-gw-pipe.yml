@@ -1,13 +1,23 @@
-name: sparkle api gateway pipeline
+name: sparkle-api-gateway ci pipeline
 
 on: [push]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: set scripts permissions
-              run: chmod 777 ./bin/*.sh
-            - name: build docker
-              run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      - name: Build docker container
+        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+      - name: Create docker network
+        run: docker network create sparkle-net
+      - name: Update dependencies
+        run: ./bin/deps.sh
+      - name: Set up virtual env
+        run: ./bin/venv.sh
+      - name: Run integration tests
+        run: ./bin/run_integration_tests.sh
+        env:
+          SPARKLE_TEST_ENV: 1
             

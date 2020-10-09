@@ -1,9 +1,10 @@
 import asyncpg
 import asyncio
+import os
 from core.log import get_logger
 
 log = get_logger("db")
-DSN = 'postgres://sparkle:foobar@localhost:5432/sparkledb'
+DSN = f'postgres://sparkle:foobar@sparkledb:5432/sparkledb'
 
 
 class ConnectionPool(object):
