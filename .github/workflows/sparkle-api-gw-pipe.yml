@@ -11,7 +11,7 @@ jobs:
       - name: Build docker container
         run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
       - name: Create docker network
-        run: docker network create host
+        run: docker network create sparkle-net
       - name: Update dependencies
         run: ./bin/deps.sh
       - name: Set up virtual env
