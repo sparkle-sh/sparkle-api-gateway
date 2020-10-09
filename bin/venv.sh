@@ -14,4 +14,10 @@ echo "Instaling requirements"
 sudo ./venv/bin/python3.7 -m pip install -r ./misc/requirements.txt
 echo "Installing test requirements"
 sudo ./venv/bin/python3.7 -m pip install -r ./misc/test-requirements.txt
+
+if [ -d ./test/integration/sparkle_test_base ]; then
+    echo "Installing test base requirements"
+    sudo ./venv/bin/python3.7 -m pip install -r ./test/integration/sparkle_test_base/requirements.txt
+fi
+
 echo "Done!"
