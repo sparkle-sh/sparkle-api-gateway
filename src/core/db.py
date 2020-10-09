@@ -25,5 +25,6 @@ class ConnectionPool(object):
         raise RuntimeError("Could not connect to database")
 
     @staticmethod
-    def acquire_connection():
+    def acquire_connection() -> asyncpg.Connection:
         return ConnectionPool.pool.acquire()
+        
