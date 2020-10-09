@@ -10,6 +10,8 @@ jobs:
         run: git submodule update --init --recursive
       - name: Build docker container
         run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+      - name: Create docker network
+        run: docker network create host
       - name: Update dependencies
         run: ./bin/deps.sh
       - name: Set up virtual env
