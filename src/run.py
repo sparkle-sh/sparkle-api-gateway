@@ -5,13 +5,13 @@ import asyncio
 import aiomisc
 from core.log import get_logger
 from core.db import ConnectionPool
-
+from service import ApiService
 
 log = get_logger("main")
 
 
 @aiomisc.receiver(aiomisc.entrypoint.PRE_START)
-async def pre_init(entrypoint, services) -> None:
+async def pre_init(entrypoint, services):
     log.info("Setting up signal handler")
 
     async def shutdown() -> None:
@@ -33,15 +33,11 @@ async def pre_init(entrypoint, services) -> None:
     await ConnectionPool.init()
 
 
-async def main():
-    async with ConnectionPool.acquire_connection() as conn:
-        users = await conn.fetch("SELECT * from users")
-        for user in users:
-            print(user['name'], user['passwd'])
+api = ApiService()
 
 try:
-    with aiomisc.entrypoint(log_config=False) as loop:
-        loop.run_until_complete(main())
+    with aiomisc.entrypoint(api, log_config=False) as loop:
+        loop.run_forever()
 except asyncio.CancelledError:
     pass
 
