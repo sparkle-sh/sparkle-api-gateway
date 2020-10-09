@@ -1,0 +1,3 @@
+[submodule "test/integration/sparkle_test_base"]
+	path = test/integration/sparkle_test_base
+	url = https://github.com/sparkle-sh/sparkle-test-base.git
