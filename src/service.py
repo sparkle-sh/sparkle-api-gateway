@@ -7,7 +7,7 @@ from core.log import get_logger
 
 log = get_logger("api")
 HOST = '0.0.0.0'
-PORT = 7776
+PORT = 7775
 
 
 class ApiService(aiomisc.Service):
