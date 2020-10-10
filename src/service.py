@@ -6,22 +6,20 @@ from core.log import get_logger
 
 
 log = get_logger("api")
-HOST = '0.0.0.0'
-PORT = 7775
+
 
 
 class ApiService(aiomisc.Service):
-    def __init__(self):
-        self.host = HOST
-        self.port = PORT
-        self.app = sanic.Sanic(name='sparkle-midpoint')
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.app = sanic.Sanic(name='sparkle-api-gateway')
     
     async def start(self):
         log.info("Starting api service")
 
         await self.setup_root_endpoint()
         await asyncio.create_task(
-            self.app.create_server(host=self.host, port=self.port, return_asyncio_server=True))
+            self.app.create_server(host=self.cfg.api.host, port=self.cfg.api.port, return_asyncio_server=True))
 
     async def stop(self, exception: Exception = None):
         log.info("Stopping api service")

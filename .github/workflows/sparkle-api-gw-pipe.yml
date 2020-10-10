@@ -20,4 +20,11 @@ jobs:
         run: ./bin/run_integration_tests.sh
         env:
           SPARKLE_TEST_ENV: 1
+      - name: Push docker container
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          docker login --username ${{ secrets.DOCKER_AUTH_LOGIN }} --password ${{ secrets.DOCKER_AUTH_TOKEN}}
+          docker tag sparkle-api-gateway $ {{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
+          docker push ${{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
+      
             

@@ -4,14 +4,14 @@ import os
 from core.log import get_logger
 
 log = get_logger("db")
-DSN = f'postgres://sparkle:foobar@sparkledb:5432/sparkledb'
 
 
 class ConnectionPool(object):
     pool: asyncpg.pool.Pool = None
 
     @staticmethod
-    async def init(dsn=DSN, tries=10, interval=5):
+    async def init(cfg, tries=10, interval=5):
+        dsn = f'postgres://{cfg.db.user}:foobar@{cfg.db.host}:{cfg.db.port}/{cfg.db.name}'
         for _ in range(tries):
             try:
                 ConnectionPool.pool = await asyncpg.create_pool(
