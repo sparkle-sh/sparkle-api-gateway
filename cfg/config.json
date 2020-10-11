@@ -8,5 +8,11 @@
         "port": 5432,
         "name": "sparkledb",
         "user": "sparkle"
+    },
+    "services": {
+        "midpoint": {
+            "host": "0.0.0.0",
+            "port": 7776
+        }
     }
 }
