@@ -24,7 +24,7 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         run: |
           docker login --username ${{ secrets.DOCKER_AUTH_LOGIN }} --password ${{ secrets.DOCKER_AUTH_TOKEN}}
-          docker tag sparkle-api-gateway $ {{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
+          docker tag sparkle-api-gateway ${{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
           docker push ${{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
       
             
