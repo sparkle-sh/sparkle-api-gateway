@@ -44,6 +44,7 @@ class Config(object):
         with open(path, 'r') as f:
             cfg = json.loads(f.read())
         self.load_api(cfg)
+        self.load_db(cfg)
 
     def load_api(self, cfg):
         if 'api' not in cfg:
