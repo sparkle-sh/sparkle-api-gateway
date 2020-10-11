@@ -3,12 +3,16 @@ import os
 import uvloop
 import asyncio
 import aiomisc
+from core import config
 from core.log import get_logger
 from core.db import ConnectionPool
 from service import ApiService
 
 log = get_logger("main")
 
+log.info("Loading config")
+config = config.Config("./cfg/config.json")
+log.info("Config loaded")
 
 @aiomisc.receiver(aiomisc.entrypoint.PRE_START)
 async def pre_init(entrypoint, services):
@@ -30,10 +34,12 @@ async def pre_init(entrypoint, services):
         )
 
     log.info("Connecting connection pool")
-    await ConnectionPool.init()
+    await ConnectionPool.init(config)
 
 
-api = ApiService()
+log.info("Creating api service instance")
+api = ApiService(config)
+log.info("Api service instance created")
 
 try:
     with aiomisc.entrypoint(api, log_config=False) as loop:
