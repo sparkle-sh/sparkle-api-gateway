@@ -12,7 +12,7 @@ jobs:
         run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
       - name: Create docker network
         run: docker network create sparkle-net
-      - name: set scripts permissions
+      - name: Set scripts permissions
         run: chmod 777 ./bin/*.sh
       - name: Update dependencies
         run: ./bin/deps.sh
