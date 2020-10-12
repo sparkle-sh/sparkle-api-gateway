@@ -12,10 +12,14 @@ jobs:
         run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
       - name: Create docker network
         run: docker network create sparkle-net
+      - name: Set scripts permissions
+        run: chmod 777 ./bin/*.sh
       - name: Update dependencies
         run: ./bin/deps.sh
       - name: Set up virtual env
         run: ./bin/venv.sh
+      - name: Run unit tests
+        run: ./bin/run_unit_tests.sh
       - name: Run integration tests
         run: ./bin/run_integration_tests.sh
         env:

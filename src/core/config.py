@@ -30,9 +30,9 @@ def parse_dataclass(payload, keywords, Model):
     return Model(*args)
 
 
-def parse_address(data) -> NetAddress:
+def parse_net_address(address) -> NetAddress:
     required_keywords = ['host', 'port']
-    return parse_dataclass(data, required_keywords, NetAddress)
+    return parse_dataclass(address, required_keywords, NetAddress)
 
 
 def parse_db_data(data) -> DbData:
@@ -69,7 +69,12 @@ class Config(object):
     def load_services(self, cfg):
         if 'services' not in cfg:
             raise error.ConfigError("Config file is corrupted")
-
+        
         services = cfg.get("services")
 
-        self.midpoint = parse_address(services.get('midpoint'))
+        if 'midpoint' not in services:
+            raise error.ConfigError("Config file is corrupted")
+
+        self.midpoint = parse_net_address(services.get('midpoint')) 
+
+
