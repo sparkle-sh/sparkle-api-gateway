@@ -1,18 +1,18 @@
 {
-    "api": {
-        "host": "0.0.0.0",
-        "port": 7775
-    },
-    "db": {
-        "host": "127.0.0.1",
-        "port": 5432,
-        "name": "sparkledb",
-        "user": "sparkle"
-    },
-    "services": {
-        "midpoint": {
-            "host": "0.0.0.0",
-            "port": 7776
-        }
-    }
+	"api": {
+		"host": "0.0.0.0",
+		"port": 7775
+	},
+	"db": {
+		"host": "sparkledb",
+		"port": 5432,
+		"name": "sparkledb",
+		"user": "sparkle"
+	},
+	"services": {
+		"midpoint": {
+			"host": "0.0.0.0",
+			"port": 7776
+		}
+	}
 }
