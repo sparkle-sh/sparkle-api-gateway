@@ -3,21 +3,22 @@ import asyncio
 import aiomisc
 import sanic
 from core.log import get_logger
+from proxy import proxy
 
 
 log = get_logger("api")
-
 
 
 class ApiService(aiomisc.Service):
     def __init__(self, cfg):
         self.cfg = cfg
         self.app = sanic.Sanic(name='sparkle-api-gateway')
-    
+
     async def start(self):
         log.info("Starting api service")
 
         await self.setup_root_endpoint()
+        await proxy.setup_proxies(self.app, self.cfg)
         await asyncio.create_task(
             self.app.create_server(host=self.cfg.api.host, port=self.cfg.api.port, return_asyncio_server=True))
 

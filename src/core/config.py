@@ -43,7 +43,8 @@ def parse_db_data(data) -> DbData:
 class Config(object):
     def __init__(self, path: str):
         if not os.path.isfile(path):
-            raise error.ConfigError(f"Could not find configuration file: {path}")
+            raise error.ConfigError(
+                f"Could not find configuration file: {path}")
 
         cfg = {}
         with open(path, 'r') as f:
@@ -56,12 +57,13 @@ class Config(object):
         if 'api' not in cfg:
             cfg['api'] = {}
 
-        self.api = NetAddress(cfg['api'].get('host', API_DEFAULT_HOST), cfg['api'].get('port', API_DEFAULT_PORT))
-    
+        self.api = NetAddress(cfg['api'].get(
+            'host', API_DEFAULT_HOST), cfg['api'].get('port', API_DEFAULT_PORT))
+
     def load_db(self, cfg):
         if 'db' not in cfg:
             raise error.ConfigError("Config file is corrupted")
-        
+
         self.db = parse_db_data(cfg.get('db'))
 
     def load_services(self, cfg):
@@ -74,4 +76,5 @@ class Config(object):
             raise error.ConfigError("Config file is corrupted")
 
         self.midpoint = parse_net_address(services.get('midpoint')) 
+
 
