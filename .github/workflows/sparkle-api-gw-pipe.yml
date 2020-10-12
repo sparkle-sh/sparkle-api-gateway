@@ -16,6 +16,8 @@ jobs:
         run: ./bin/deps.sh
       - name: Set up virtual env
         run: ./bin/venv.sh
+      - name: Run unit tests
+        run: ./bin/run_unit_tests.sh
       - name: Run integration tests
         run: ./bin/run_integration_tests.sh
         env:
