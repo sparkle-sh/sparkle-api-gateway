@@ -8,18 +8,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Checkout submodules
         run: git submodule update --init --recursive
-      - name: Build docker container
-        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
-      - name: Create docker network
-        run: docker network create sparkle-net
-      - name: Set scripts permissions
-        run: chmod 777 ./bin/*.sh
       - name: Update dependencies
         run: ./bin/deps.sh
       - name: Set up virtual env
         run: ./bin/venv.sh
       - name: Run unit tests
         run: ./bin/run_unit_tests.sh
+      - name: Build docker container
+        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+      - name: Create docker network
+        run: docker network create sparkle-net
+      - name: Set scripts permissions
+        run: chmod 777 ./bin/*.sh
       - name: Run integration tests
         run: ./bin/run_integration_tests.sh
         env:
