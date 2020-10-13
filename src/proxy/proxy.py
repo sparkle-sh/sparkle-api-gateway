@@ -1,6 +1,7 @@
 import enum
 import sanic
 import httpx
+from sanic_jwt import protected
 
 
 class Http(enum.IntEnum):
@@ -26,16 +27,19 @@ class Proxy(object):
 
     def get(self, url):
         @self.proxy.get(url)
+        @protected()
         async def proxy(req):
             return await self.handle_request(req, f'{self.base_url}{url}', Http.GET)
 
     def post(self, url):
         @self.proxy.post(url)
+        @protected()
         async def proxy(req):
             return await self.handle_request(req, f'{self.base_url}{url}', Http.POST)
 
     def put(self, url):
         @self.proxy.put(url)
+        @protected()
         async def proxy(req):
             return await self.handle_request(req, f'{self.base_url}{url}', Http.PUT)
 

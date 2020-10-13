@@ -4,6 +4,9 @@ import aiomisc
 import sanic
 from core.log import get_logger
 from proxy import setup_proxies
+from sanic_jwt import initialize
+from sanic_jwt import protected
+from auth import auth
 
 
 log = get_logger("api")
@@ -12,14 +15,13 @@ log = get_logger("api")
 class ApiService(aiomisc.Service):
     def __init__(self, cfg):
         self.cfg = cfg
-        self.app = sanic.Sanic(name='sparkle-api-gateway')
+        self.app = sanic.Sanic(name='sparkle-api-gateway')  
 
     async def start(self):
         log.info("Starting api service")
-
+        initialize(self.app, authenticate=auth.authenticate)
         self.setup_root_endpoint()
         setup_proxies(self.app, self.cfg)
-
         await asyncio.create_task(
             self.app.create_server(host=self.cfg.api.host, port=self.cfg.api.port, return_asyncio_server=True))
 
@@ -28,6 +30,7 @@ class ApiService(aiomisc.Service):
 
     def setup_root_endpoint(self):
         @self.app.get("/")
+        @protected()
         async def root_endpoint(req):
             return sanic.response.json(self.get_application_info())
 

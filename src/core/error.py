@@ -9,3 +9,4 @@ class SparkleError(Exception):
 
 class ConfigError(SparkleError):
     pass
+    
