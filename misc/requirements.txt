@@ -1,5 +1,6 @@
 aiomisc>=9.6.8
 sanic>=18.9.0
+sanic-jwt==1.1.4
 uvloop>=0.14.0
 asyncpg==0.21.0
 httpx==0.16.1
