@@ -3,7 +3,7 @@ import asyncio
 import aiomisc
 import sanic
 from core.log import get_logger
-from proxy import proxy
+from proxy import setup_proxies
 
 
 log = get_logger("api")
@@ -17,15 +17,16 @@ class ApiService(aiomisc.Service):
     async def start(self):
         log.info("Starting api service")
 
-        await self.setup_root_endpoint()
-        await proxy.setup_proxies(self.app, self.cfg)
+        self.setup_root_endpoint()
+        setup_proxies(self.app, self.cfg)
+
         await asyncio.create_task(
             self.app.create_server(host=self.cfg.api.host, port=self.cfg.api.port, return_asyncio_server=True))
 
     async def stop(self, exception: Exception = None):
         log.info("Stopping api service")
 
-    async def setup_root_endpoint(self):
+    def setup_root_endpoint(self):
         @self.app.get("/")
         async def root_endpoint(req):
             return sanic.response.json(self.get_application_info())
