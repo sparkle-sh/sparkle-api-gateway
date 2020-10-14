@@ -4,3 +4,5 @@ sanic-jwt==1.1.4
 uvloop>=0.14.0
 asyncpg==0.21.0
 httpx==0.16.1
+bcrypt==3.2.0
+psycopg2==2.8.6
