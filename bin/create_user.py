@@ -25,17 +25,27 @@ def get_arguments_for_user_creation():
 
 def list_all_users():
     args = get_arguments_for_users_list()
-    select_users_query = "SELECT name FROM users"
-    users = select_from_db(args.config, select_users_query)
+    users = select_users_from_db(args.config)
     for user in users:
         print(user[0])
 
 
 def create_user():
     args = get_arguments_for_user_creation()
+    if check_if_user_in_db(args.config, args.username):
+        print("User already in database. Please try again.")
+        return
     hashed_passwd = hash_password(args.passwd)
     create_user_query = f"INSERT INTO users (name, passwd) VALUES ('{args.username}','{hashed_passwd.decode()}')"
     insert_to_db(args.config, create_user_query)
+
+
+def check_if_user_in_db(config, username):
+    users = select_users_from_db(config)
+    for user in users:
+        if user[0]==username:
+            return True
+    return False
 
 
 def hash_password(passwd):
@@ -61,7 +71,8 @@ def insert_to_db(config, query):
         print(err)
 
 
-def select_from_db(config, query):
+def select_users_from_db(config):
+    query = "SELECT name FROM users"
     dsn = get_dsn(config)
     try:
         conn = psycopg2.connect(dsn)
