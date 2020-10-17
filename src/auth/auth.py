@@ -1,5 +1,6 @@
 from sanic_jwt import exceptions
 from core.db import ConnectionPool
+import bcrypt
 
 
 async def authenticate(request, *args, **kwargs):
@@ -12,7 +13,7 @@ async def authenticate(request, *args, **kwargs):
         if not res:
             raise exceptions.AuthenticationFailed("Invalid username")
         
-        if passwd != res[0]['passwd']:
+        if not bcrypt.checkpw(passwd.encode(),res[0]['passwd'].encode()):
             raise exceptions.AuthenticationFailed("Invalid password")
 
     user = {'username': username, 'passwd': passwd}
