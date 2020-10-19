@@ -15,12 +15,12 @@ log = get_logger("api")
 class ApiService(aiomisc.Service):
     def __init__(self, cfg):
         self.cfg = cfg
-        self.app = sanic.Sanic(name='sparkle-api-gateway')  
+        self.app = sanic.Sanic(name='sparkle-api-gateway')
 
     async def start(self):
         log.info("Starting api service")
         initialize(self.app, authenticate=auth.authenticate)
-        self.setup_root_endpoint()
+        self.setup_root_endpoints()
         setup_proxies(self.app, self.cfg)
         await asyncio.create_task(
             self.app.create_server(host=self.cfg.api.host, port=self.cfg.api.port, return_asyncio_server=True))
@@ -28,11 +28,21 @@ class ApiService(aiomisc.Service):
     async def stop(self, exception: Exception = None):
         log.info("Stopping api service")
 
-    def setup_root_endpoint(self):
+    def setup_root_endpoints(self):
         @self.app.get("/")
         @protected()
         async def root_endpoint(req):
             return sanic.response.json(self.get_application_info())
+
+        @self.app.exception(sanic.exceptions.NotFound)
+        async def handle_404(request, exception):
+            return sanic.response.json({
+                "msg": f"Route {request.url} not found"}, status=404)
+
+        @self.app.exception(sanic.exceptions.MethodNotSupported)
+        async def handle_invalid_method(request, exception):
+            return sanic.response.json({
+                "msg": f"Method {request.method} not allowed for url {request.url}"}, status=405)
 
     def get_application_info(self):
         payload = {
