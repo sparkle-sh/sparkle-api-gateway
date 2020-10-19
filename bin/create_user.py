@@ -68,7 +68,8 @@ def insert_to_db(config, query):
         conn.close()
         print("Success!")
     except psycopg2.DatabaseError as err:
-        print(err)
+        print("Could not perform database operation: {} ".format(err))
+        sys.exit(-1) 
 
 
 def select_users_from_db(config):
@@ -82,8 +83,8 @@ def select_users_from_db(config):
         conn.close()
         return records
     except psycopg2.DatabaseError as err:
-        print(err)
-
+        print("Could not perform database operation: {} ".format(err))
+        sys.exit(-1) 
 
 def main():
     if '--list' in sys.argv or '-l' in sys.argv:
