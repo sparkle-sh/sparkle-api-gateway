@@ -39,6 +39,11 @@ class ApiService(aiomisc.Service):
             return sanic.response.json({
                 "msg": f"Route {request.url} not found"}, status=404)
 
+        @self.app.exception(sanic.exceptions.InvalidUsage)
+        async def handle_invalid_usage(request, exception):
+            return sanic.response.json({
+                "msg": f"Invalid body format"}, status=400)
+
         @self.app.exception(sanic.exceptions.MethodNotSupported)
         async def handle_invalid_method(request, exception):
             return sanic.response.json({
