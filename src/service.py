@@ -9,7 +9,7 @@ from sanic_jwt import protected
 from auth import auth
 
 
-log = get_logger("api")
+log = get_logger("service")
 
 
 class ApiService(aiomisc.Service):
@@ -36,16 +36,19 @@ class ApiService(aiomisc.Service):
 
         @self.app.exception(sanic.exceptions.NotFound)
         async def handle_404(request, exception):
+            log.warning(f"Route {request.url} not found")
             return sanic.response.json({
                 "msg": f"Route {request.url} not found"}, status=404)
 
         @self.app.exception(sanic.exceptions.InvalidUsage)
         async def handle_invalid_usage(request, exception):
+            log.warning(f"Invalid request body format {request.body}")
             return sanic.response.json({
                 "msg": f"Invalid body format"}, status=400)
 
         @self.app.exception(sanic.exceptions.MethodNotSupported)
         async def handle_invalid_method(request, exception):
+            log.warning(f"Method {request.method} not allowed for url {request.url}")
             return sanic.response.json({
                 "msg": f"Method {request.method} not allowed for url {request.url}"}, status=405)
 

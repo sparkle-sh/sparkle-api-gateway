@@ -8,7 +8,7 @@ from core.log import get_logger
 from core.db import ConnectionPool
 from service import ApiService
 
-log = get_logger("main")
+log = get_logger("core.run")
 
 log.info("Loading config")
 config = config.Config("./cfg/config.json")
@@ -40,6 +40,9 @@ async def pre_init(entrypoint, services):
 log.info("Creating api service instance")
 api = ApiService(config)
 log.info("Api service instance created")
+
+log.info("Installing uvloop")
+uvloop.install()
 
 try:
     with aiomisc.entrypoint(api, log_config=False) as loop:
