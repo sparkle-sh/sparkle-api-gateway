@@ -49,10 +49,11 @@ class Proxy(object):
             async with httpx.AsyncClient() as client:
                 r = await HTTPX_REQUESTS[method](client, url)
         except httpx.ConnectError as e:
+            log.warning(f"Could not handle request: {e}")
             return sanic.response.json({
                 "msg": "Proxy endpoint provider is down"
             }, status=400)
-
+        
         return sanic.response.json(
             r.json(),
             headers=r.headers,

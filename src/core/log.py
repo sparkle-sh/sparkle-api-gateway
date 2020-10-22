@@ -11,5 +11,6 @@ def get_logger(name: str) -> logging.Logger:
     console = logging.StreamHandler()
     console.setFormatter(formatter)
 
+    root.propagate = False
     root.addHandler(console)
     return root
