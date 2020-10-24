@@ -8,7 +8,7 @@ from core.log import get_logger
 from core.db import ConnectionPool
 from service import ApiService
 
-log = get_logger("core.run")
+log = get_logger("main")
 
 log.info("Loading config")
 config = config.Config("./cfg/config.json")
