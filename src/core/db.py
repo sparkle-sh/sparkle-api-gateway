@@ -1,7 +1,8 @@
 import asyncpg
 import asyncio
 import os
-from core.log import get_logger
+from .log import get_logger
+from .error import DatabaseError
 
 log = get_logger("core.db")
 
@@ -23,7 +24,7 @@ class ConnectionPool(object):
             except Exception as e:
                 log.warning("Unable to connect to database, retrying in %ss", interval)
             await asyncio.sleep(interval)
-        raise RuntimeError("Could not connect to database")
+        raise DatabaseError("Could not connect to database")
 
     @staticmethod
     def acquire_connection() -> asyncpg.Connection:

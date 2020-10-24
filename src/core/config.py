@@ -1,7 +1,7 @@
 import json
 import os
 import dataclasses
-from core import error
+from .error import ConfigError
 
 
 API_DEFAULT_HOST = "0.0.0.0"
@@ -25,7 +25,7 @@ class DbData(object):
 def parse_dataclass(payload, keywords, Model):
     for keyword in keywords:
         if keyword not in payload:
-            raise error.ConfigError("Config file is corrupted")
+            raise ConfigError("Config file is corrupted")
     args = (payload.get(keyword) for keyword in keywords)
     return Model(*args)
 
@@ -43,7 +43,7 @@ def parse_db_data(data) -> DbData:
 class Config(object):
     def __init__(self, path: str):
         if not os.path.isfile(path):
-            raise error.ConfigError(
+            raise ConfigError(
                 f"Could not find configuration file: {path}")
 
         cfg = {}
@@ -62,18 +62,18 @@ class Config(object):
 
     def load_db(self, cfg):
         if 'db' not in cfg:
-            raise error.ConfigError("Config file is corrupted")
+            raise ConfigError("Cannot find db in config file")
 
         self.db = parse_db_data(cfg.get('db'))
 
     def load_services(self, cfg):
         if 'services' not in cfg:
-            raise error.ConfigError("Config file is corrupted")
+            raise ConfigError("Cannot find services in config file")
         
         services = cfg.get("services")
 
         if 'midpoint' not in services:
-            raise error.ConfigError("Config file is corrupted")
+            raise ConfigError("Cannot find midpoint service in config file")
 
         self.midpoint = parse_net_address(services.get('midpoint')) 
 
