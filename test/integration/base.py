@@ -7,6 +7,8 @@ class ApiGatewayTestBase(TestBase):
     def setUp(self):
         super().setUp()
         self.url = API_GW_API_BASE
+        self.wait_for_database()
+
         if self.is_test_env():
             self.start_database()
             self.wait_for_database()
