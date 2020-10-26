@@ -19,7 +19,7 @@ class ApiService(aiomisc.Service):
 
     async def start(self):
         log.info("Starting api service")
-        initialize(self.app, authenticate=auth.authenticate)
+        initialize(self.app, url_prefix = '/login', authenticate=auth.authenticate)
         self.setup_root_endpoints()
         setup_proxies(self.app, self.cfg)
         await asyncio.create_task(

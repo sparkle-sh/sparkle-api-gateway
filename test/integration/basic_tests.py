@@ -9,7 +9,7 @@ class BasicTests(ApiGatewayTestBase):
         super().tearDown()
         self.db_conn.close()
 
-    def test_auth_endpoint(self):
+    def test_login_endpoint(self):
         cursor = self.get_db_cursor()
         hashed_passwd = bcrypt.hashpw("valid_passwd".encode(), bcrypt.gensalt())
         cursor.execute(f"INSERT INTO users (name, passwd) VALUES ('valid_username', '{hashed_passwd.decode()}')")
@@ -18,7 +18,7 @@ class BasicTests(ApiGatewayTestBase):
             "username": "valid_username",
             "passwd": "valid_passwd"
         }
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth', json=payload)
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login', json=payload)
         self.assertEqual(code, 200)
         self.assertIn("access_token", res)
 
@@ -26,39 +26,39 @@ class BasicTests(ApiGatewayTestBase):
         code, res = self.wrapped_request(requests.get, f'{self.url}/invalid_route')
         self.assertEqual(code, 404)
 
-    def test_auth_with_invalid_method(self):
-        code, res = self.wrapped_request(requests.get, f'{self.url}/auth')
+    def test_login_with_invalid_method(self):
+        code, res = self.wrapped_request(requests.get, f'{self.url}/login')
         self.assertEqual(code, 405)
 
-    def test_auth_without_body(self):
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth')
+    def test_login_without_body(self):
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login')
         self.assertEqual(code, 401)
         self.assertIn("Body is required", res.get("reasons"))
 
-    def test_auth_if_invalid_body_format(self):
+    def test_login_if_invalid_body_format(self):
         payload = "invalid_body"
         headers = {'content-type': 'application/json'}
-        res = requests.post(f'{self.url}/auth', headers = headers, data = payload)
+        res = requests.post(f'{self.url}/login', headers = headers, data = payload)
         self.assertEqual(res.status_code, 400)
         self.assertIn("Invalid body format", json.loads(res.text).get("msg"))
 
-    def test_auth_without_username(self):
+    def test_login_without_username(self):
         payload = {
             "passwd": "passwd"
         }
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth', json=payload)
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login', json=payload)
         self.assertEqual(code, 401)
         self.assertIn("Username is required", res.get("reasons"))
 
-    def test_auth_without_passwd(self):
+    def test_login_without_passwd(self):
         payload = {
             "username": "username"
         }
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth', json=payload)
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login', json=payload)
         self.assertEqual(code, 401)
         self.assertIn("Passwd is required", res.get("reasons"))
 
-    def test_auth_with_invalid_username(self):
+    def test_login_with_invalid_username(self):
         cursor = self.get_db_cursor()
         cursor.execute("INSERT INTO users (name, passwd) VALUES ('valid_username', 'valid_passwd')")
         self.db_conn.commit()
@@ -66,11 +66,11 @@ class BasicTests(ApiGatewayTestBase):
             "username": "invalid_username",
             "passwd": "valid_passwd"
         }
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth', json=payload)
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login', json=payload)
         self.assertEqual(code, 401)
         self.assertIn("Invalid username", res.get("reasons"))
 
-    def test_auth_with_invalid_passwd(self):
+    def test_login_with_invalid_passwd(self):
         cursor = self.get_db_cursor()
         hashed_passwd = bcrypt.hashpw("valid_passwd".encode(), bcrypt.gensalt())
         cursor.execute(f"INSERT INTO users (name, passwd) VALUES ('valid_username', '{hashed_passwd.decode()}')")
@@ -79,7 +79,7 @@ class BasicTests(ApiGatewayTestBase):
             "username": "valid_username",
             "passwd": "invalid_passwd"
         }
-        code, res = self.wrapped_request(requests.post, f'{self.url}/auth', json=payload)
+        code, res = self.wrapped_request(requests.post, f'{self.url}/login', json=payload)
         self.assertEqual(code, 401)
         self.assertIn("Invalid password", res.get("reasons"))
 
@@ -92,7 +92,7 @@ class BasicTests(ApiGatewayTestBase):
             "username": "valid_username",
             "passwd": "valid_passwd"
         }
-        _, res = self.wrapped_request(requests.post, f'{self.url}/auth', json = payload)
+        _, res = self.wrapped_request(requests.post, f'{self.url}/login', json = payload)
         headers = { 'Authorization': f'Bearer {res.get("access_token")}'}
         code, res = self.wrapped_request(requests.get, f'{self.url}/', headers = headers)
         self.assertEqual(code, 200)
