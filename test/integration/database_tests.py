@@ -1,15 +1,12 @@
 from sparkle_test_base.base import TestBase
-from src.core import config
 
 
 class DatabaseTests(TestBase):
     def setUp(self):
         super().setUp()
-        self.config = config.Config("./cfg/config.json")
-
         if self.is_test_env():
             self.start_database()
-        self.wait_for_database()
+            self.wait_for_database()
 
     def tearDown(self):
         super().tearDown()
