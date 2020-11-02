@@ -14,7 +14,7 @@ class DatabaseTests(TestBase):
 
     def test_check_tables(self):
         cursor = self.get_db_cursor()
-        cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+        cursor.execute(
+            "SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = cursor.fetchall()
         self.assertEqual(tables[0][0], "users")
-
