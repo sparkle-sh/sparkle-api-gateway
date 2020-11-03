@@ -14,16 +14,16 @@ jobs:
         run: ./bin/deps.sh
       - name: Set up virtual env
         run: ./bin/venv.sh
-      - name: Fetch sparkle-db scheme:
-        run: |
-            git clone --single-branch --branch https://github.com/sparkle-sh/sparkle-db
-            ln -s /sparkle-db/misc test_misc
       - name: Run unit tests
         run: ./bin/run_unit_tests.sh
       - name: Build docker container
-        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile . 
+        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile .
       - name: Create docker network
         run: docker network create sparkle-net
+      - name: Fetch sparkle-db scheme:
+        run: |
+            git clone --single-branch --branch https://github.com/sparkle-sh/sparkle-db .
+            ln -s /sparkle-db/misc test_misc
       - name: Run integration tests
         run: ./bin/run_integration_tests.sh
         env:
@@ -34,5 +34,3 @@ jobs:
           docker login --username ${{ secrets.DOCKER_AUTH_LOGIN }} --password ${{ secrets.DOCKER_AUTH_TOKEN}}
           docker tag sparkle-api-gateway ${{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
           docker push ${{ secrets.DOCKER_AUTH_LOGIN }}/sparkle-api-gateway
-      
-            
