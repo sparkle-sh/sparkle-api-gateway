@@ -17,13 +17,13 @@ jobs:
       - name: Run unit tests
         run: ./bin/run_unit_tests.sh
       - name: Build docker container
-        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile .
+        run: docker build -t sparkle-api-gateway --file ./misc/Dockerfile
       - name: Create docker network
         run: docker network create sparkle-net
       - name: Fetch sparkle-db scheme
         run: |
-            git clone --single-branch --branch https://github.com/sparkle-sh/sparkle-db .
-            ln -s /sparkle-db/misc test_misc
+          git clone --single-branch --branch https://github.com/sparkle-sh/sparkle-db .
+          ln -s /sparkle-db/misc test_misc
       - name: Run integration tests
         run: ./bin/run_integration_tests.sh
         env:
