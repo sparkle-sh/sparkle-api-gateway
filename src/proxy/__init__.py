@@ -3,6 +3,9 @@ from core.log import get_logger
 
 log = get_logger("proxy")
 
+
 def setup_proxies(app, cfg):
     log.info("Setting up proxies")
-    app.blueprint(setup_midpoint_proxy(cfg.midpoint))
+    midpoint_blueprints = setup_midpoint_proxy(cfg.midpoint)
+    for midpoint_blueprint in midpoint_blueprints:
+        app.blueprint(midpoint_blueprint)
