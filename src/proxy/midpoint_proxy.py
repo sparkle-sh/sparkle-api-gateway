@@ -245,7 +245,6 @@ def setup_task_proxy(base_url) -> sanic.Blueprint:
     async def task_post(req):
         headers = {
             "Authorization": req.headers["authorization"],
-            "Task-ID": req.headers["task-ID"]
         }
         res = None
         try:
