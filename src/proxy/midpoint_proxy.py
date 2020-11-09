@@ -12,11 +12,39 @@ def setup_midpoint_proxy(midpoint_cfg) -> sanic.Blueprint:
     midpoint_blueprints = []
     base_url = f'http://{midpoint_cfg.host}:{midpoint_cfg.port}'
 
+    midpoint_blueprints.append(setup_root_proxy(base_url))
     midpoint_blueprints.append(setup_agent_proxy(base_url))
     midpoint_blueprints.append(setup_device_proxy(base_url))
     midpoint_blueprints.append(setup_task_proxy(base_url))
 
     return midpoint_blueprints
+
+
+def setup_root_proxy(base_url) -> sanic.Blueprint:
+    log.info("Setting up root proxy")
+    bp = sanic.Blueprint('midpoint', url_prefix='/midpoint')
+
+    @bp.get("/")
+    @protected()
+    async def root_get(req):
+        headers = {
+            "Authorization": req.headers["authorization"],
+        }
+        res = None
+        try:
+            async with httpx.AsyncClient() as client:
+                res = await httpx.AsyncClient.get(client, f'{base_url}/', headers=headers)
+        except httpx.ConnectError as e:
+            log.warning(f"Could not handle request: {e}")
+            return sanic.response.json({
+                "msg": "Proxy endpoint provider is down"
+            }, status=400)
+        return sanic.response.json(
+            res.json(),
+            headers=res.headers,
+            status=res.status_code
+        )
+    return bp
 
 
 def setup_agent_proxy(base_url) -> sanic.Blueprint:
