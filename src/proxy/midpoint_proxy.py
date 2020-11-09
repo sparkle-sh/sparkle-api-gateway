@@ -223,7 +223,7 @@ def setup_task_proxy(base_url) -> sanic.Blueprint:
     async def task_get(req):
         headers = {
             "Authorization": req.headers["authorization"],
-            "Agent-ID": req.headers["agent-ID"]
+            "Task-ID": req.headers["task-ID"]
         }
         res = None
         try:
@@ -245,7 +245,7 @@ def setup_task_proxy(base_url) -> sanic.Blueprint:
     async def task_post(req):
         headers = {
             "Authorization": req.headers["authorization"],
-            "Agent-ID": req.headers["agent-ID"]
+            "Task-ID": req.headers["task-ID"]
         }
         res = None
         try:
@@ -267,7 +267,7 @@ def setup_task_proxy(base_url) -> sanic.Blueprint:
     async def task_delete(req):
         headers = {
             "Authorization": req.headers["authorization"],
-            "Agent-ID": req.headers["agent-ID"]
+            "Task-ID": req.headers["task-ID"]
         }
         res = None
         try:
@@ -289,7 +289,7 @@ def setup_task_proxy(base_url) -> sanic.Blueprint:
     async def task_put(req):
         headers = {
             "Authorization": req.headers["authorization"],
-            "Agent-ID": req.headers["agent-ID"]
+            "Task-ID": req.headers["task-ID"]
         }
         res = None
         try:
